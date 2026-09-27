@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Activity, CarFront, CircleUserRound, History, Home, MapPinPlus } from "lucide-react";
 import { Brand } from "./brand";
+import { NotificationBell } from "./notification-bell";
 import { cn } from "@/lib/utils";
 
 type Role = "student" | "rider";
@@ -49,7 +50,12 @@ export function AppShell({ role, children }: { role: Role; children: React.React
       </aside>
 
       <main className="min-h-screen w-full px-4 pb-28 pt-5 sm:px-8 sm:pt-8 lg:ml-64 lg:w-[calc(100%-16rem)] lg:px-10 lg:pb-16 lg:pt-10 xl:px-14">
-        <div className="mx-auto w-full max-w-3xl">{children}</div>
+        <div className="mx-auto w-full max-w-3xl">
+          <div className="mb-2 flex min-h-10 justify-end">
+            <NotificationBell role={role} />
+          </div>
+          {children}
+        </div>
       </main>
 
       <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 pb-safe shadow-[0_-8px_30px_-24px_var(--foreground)] backdrop-blur-xl lg:hidden">

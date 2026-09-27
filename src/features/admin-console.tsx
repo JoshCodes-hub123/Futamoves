@@ -4,6 +4,7 @@ import { signOutEverywhere } from "@/features/auth-pages";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, KeyRound, MapPin, Pencil, Plus, ShieldCheck } from "lucide-react";
 import { Brand } from "@/components/futamove/brand";
+import { NotificationBell } from "@/components/futamove/notification-bell";
 import { EmptyState, LoadingState } from "@/components/futamove/primitives";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -48,7 +49,10 @@ export function AdminFrame({ title, intro, children }: { title: string; intro: s
       <div className="mx-auto max-w-5xl">
         <header className="flex items-center justify-between">
           <Brand compact />
-          <SignOutButton />
+          <div className="flex items-center gap-2">
+            {admin.data === true && <NotificationBell role="admin" />}
+            <SignOutButton />
+          </div>
         </header>
         <AdminNav />
         <h1 className="display-title mt-8 text-3xl">{title}</h1>
