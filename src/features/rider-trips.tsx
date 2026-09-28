@@ -255,3 +255,112 @@ export function RiderTripsPage() {
     </AppShell>
   );
 }
+
+/** Rider Requests: one place for offers, assignments needing an answer, claimable rides and recently missed offers. All data and actions reuse the existing dispatch/trip services. */
+export function RiderRequestsPage() {
+  const qc = useQueryClient();
+  const availability = useQuery({ queryKey: ["rider-availability"], queryFn: getMyAvailability });
+  const online = availability.data === "online";
+  const mine = useQuery({ queryKey: ["rider-trips"], queryFn: listMyRiderTrips, refetchInterval: 10000 });
+  const offers = useQuery({ queryKey: ["rider-offers"], queryFn: listMyOffers, refetchInterval: online ? 6000 : false, enabled: online });
+  const available = useQuery({ queryKey: ["rider-available"], queryFn: listAvailableTrips, refetchInterval: online ? 15000 : false, enabled: online });
+  const refresh = async () => {
+    await Promise.all(["rider-trips", "rider-available", "rider-offers", "rider-availability"].map((k) => qc.invalidateQueries({ queryKey: [k] })));
+  };
+  const claim = useMutation({ mutationFn: claimTrip, onSuccess: refresh, onError: refresh });
+  const setAvail = useMutation({ mutationFn: setMyAvailability, onSuccess: refresh });
+
+  // Offers seen this session that later disappeared from the live list (expired, taken or cancelled).
+  const [missed, setMissed] = useState<RideOffer[]>([]);
+  const [seen, setSeen] = useState<Record<string, RideOffer>>({});
+  useEffect(() => {
+    if (!offers.data) return;
+    const live = new Set(offers.data.map((o) => o.offer_id));
+    const gone = Object.values(seen).filter((o) => !live.has(o.offer_id));
+    if (gone.length) setMissed((m) => [...gone, ...m].slice(0, 10));
+    setSeen(Object.fromEntries(offers.data.map((o) => [o.offer_id, o])));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [offers.data]);
+
+  const trips = mine.data ?? [];
+  const current = trips.find((t) => ACTIVE_TRIP_STATUSES.includes(t.status as TripStatus));
+  const needsAnswer = current?.status === "assigned" ? current : undefined;
+  const accepted = current && current.status !== "assigned" ? current : undefined;
+  const acceptedIds = new Set(trips.map((t) => t.id));
+  const missedShown = missed.filter((o) => !acceptedIds.has(o.trip_id));
+  const hasOffer = !!offers.data?.length;
+  const loading = availability.isLoading || mine.isLoading;
+  const error = availability.error ?? mine.error ?? offers.error ?? available.error;
+  const refreshing = mine.isFetching || offers.isFetching || available.isFetching;
+
+  return (
+    <AppShell role="rider">
+      <ScreenHeader eyebrow="Rider" title="Requests" action={
+        <Button variant="secondary" size="sm" onClick={() => void refresh()} disabled={refreshing}>{refreshing && <Loader2 className="animate-spin" />} Refresh</Button>
+      } />
+      {error && <div className="mt-6 flex items-center justify-between gap-3 rounded-card border border-destructive/25 bg-destructive/5 p-4 text-sm"><span>{error.message}</span><Button size="sm" variant="secondary" onClick={() => void refresh()}>Try again</Button></div>}
+      {loading ? <div className="mt-8"><LoadingState /></div> : <>
+        {!online && (
+          <section className="mt-8 surface-panel p-5 text-sm">
+            <p className="section-label">You're {availability.data ?? "offline"}</p>
+            <p className="mt-2 text-muted-foreground">Go online to receive ride offers and see rides waiting for a rider.</p>
+            <Button className="mt-4 w-full" disabled={setAvail.isPending} onClick={() => setAvail.mutate("online")}>{setAvail.isPending && <Loader2 className="animate-spin" />} Go online</Button>
+            {setAvail.error && <p className="mt-2 text-destructive">{setAvail.error.message}</p>}
+          </section>
+        )}
+
+        <section className="mt-10 space-y-3">
+          <SectionHeading title="Needs your action" detail={String((needsAnswer ? 1 : 0) + (offers.data?.length ?? 0))} />
+          {needsAnswer && <CurrentTrip trip={needsAnswer} onDone={refresh} />}
+          {online && !current && offers.data?.map((o) => <OfferCard key={o.offer_id} offer={o} onDone={refresh} />)}
+          {!needsAnswer && !(online && !current && hasOffer) && (
+            <div className="surface-panel"><EmptyState compact title="Nothing to answer" description={online ? "New ride offers appear here automatically. Riders take turns fairly." : "Offers only arrive while you're online."} icon={CheckCircle2} /></div>
+          )}
+        </section>
+
+        {accepted && (
+          <section className="mt-10 space-y-3">
+            <SectionHeading title="Accepted by you" />
+            <CurrentTrip trip={accepted} onDone={refresh} />
+          </section>
+        )}
+
+        {online && (
+          <section className="mt-10 space-y-3">
+            <SectionHeading title="Available to take" detail={String(available.data?.length ?? 0)} />
+            <p className="text-xs text-muted-foreground">Rides not currently offered to anyone. First rider to take one gets it.</p>
+            {claim.error && <p className="text-sm text-destructive">{claim.error.message}</p>}
+            {available.isLoading ? <LoadingState /> : available.data?.length ? (
+              <div className="divider-list">
+                {available.data.map((t) => (
+                  <div key={t.id} className="py-4">
+                    <div className="mb-2 flex items-center gap-2"><Badge variant="success" className="rounded-full">New</Badge><span className="text-xs font-semibold text-muted-foreground">{isPrivateTrip(t) ? "Private Keke" : "Shared ride"}</span></div>
+                    <Route from={t.meeting_point_text} to={t.destination_text} when={t.departure_time} pax={t.passenger_count} note={t.meeting_point_note} />
+                    <Button className="mt-3 w-full" size="sm" variant="secondary" disabled={!!current || hasOffer || claim.isPending} onClick={() => claim.mutate(t.id)}>
+                      {current ? "Finish your current ride first" : hasOffer ? "Answer your offer first" : "Take this ride"}
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            ) : <div className="surface-panel"><EmptyState compact title="No rides waiting" description="New rides are offered to riders automatically." icon={CalendarClock} /></div>}
+          </section>
+        )}
+
+        {missedShown.length > 0 && (
+          <section className="mt-10 space-y-3">
+            <SectionHeading title="Expired or unavailable" detail={String(missedShown.length)} />
+            <div className="divider-list opacity-70">
+              {missedShown.map((o) => (
+                <div key={o.offer_id} className="py-4">
+                  <Badge variant="outline" className="mb-2 rounded-full">No longer available</Badge>
+                  <Route from={o.meeting_point_text} to={o.destination_text} when={o.departure_time} pax={o.passenger_count} />
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground">Offers that expired, were answered or went to another rider during this visit.</p>
+          </section>
+        )}
+      </>}
+    </AppShell>
+  );
+}
