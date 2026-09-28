@@ -10,7 +10,7 @@ export function ScreenHeader({ eyebrow, title, action }: { eyebrow?: string; tit
     <header className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4">
       <div className="min-w-0">
         {eyebrow && <p className="section-label mb-1.5">{eyebrow}</p>}
-        <h1 className="truncate font-display text-[2rem] font-bold uppercase leading-none text-foreground sm:text-[2.25rem]">{title}</h1>
+        <h1 className="text-balance break-words font-display text-[1.75rem] font-bold uppercase leading-[0.95] text-foreground min-[380px]:text-[2rem] sm:text-[2.25rem]">{title}</h1>
       </div>
       {action}
     </header>
