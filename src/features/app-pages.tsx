@@ -75,6 +75,6 @@ export function StudentProfilePage() {
   );
 }
 export { RiderHomePage, RiderProfilePage } from "@/features/rider-dashboard";
-const riderPlaceholders = { requests: { title: "No ride requests", description: "Compatible student requests will appear here when you are online.", icon: FileCheck2 }, trips: { title: "No trips yet", description: "Accepted and completed trips will be organised here.", icon: Route }, wallet: { title: "Wallet preview", description: "Your future trip balance and payment activity will appear here.", icon: CreditCard } } as const;
+const riderPlaceholders = { requests: { title: "No ride requests", description: "Compatible student requests will appear here when you are online.", icon: FileCheck2 }, trips: { title: "No trips yet", description: "Accepted and completed trips will be organised here.", icon: Route }, wallet: { title: "Wallet and in-app payments are coming soon", description: "FUTAMOVE does not handle payments in the app yet. You can still go online, accept and complete rides as normal without a wallet.", icon: CreditCard } } as const;
 export function RiderPlaceholderPage({ type }: { type: keyof typeof riderPlaceholders }) { const item = riderPlaceholders[type]; return <AppShell role="rider"><ScreenHeader title={type.charAt(0).toUpperCase() + type.slice(1)} /><FeaturePlaceholder {...item} /></AppShell>; }
 
