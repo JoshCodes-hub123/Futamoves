@@ -11,13 +11,14 @@ import {
   Users,
 } from "lucide-react";
 import { AppShell } from "@/components/futamove/app-shell";
+import { FutaMap } from "@/components/futamove/futa-map";
 import { FieldError, ScreenHeader, TrustNote } from "@/components/futamove/primitives";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import { CATEGORY_LABELS, CATEGORY_ORDER, listActiveLocations, type FutaLocation } from "@/services/locations";
+import { listActiveLocations } from "@/services/locations";
 import {
   createRideRequest,
   formatDepartureTime,
@@ -43,6 +44,7 @@ export function RideRequestPage({
 }) {
   const navigate = useNavigate();
   const [step, setStep] = useState<Step>("route");
+  const [routeEstimate, setRouteEstimate] = useState<string | null>(null);
 
   const locationsQuery = useQuery({ queryKey: ["locations", "active"], queryFn: listActiveLocations });
   const locations = locationsQuery.data ?? [];
@@ -183,36 +185,19 @@ export function RideRequestPage({
               <p className="mt-2 text-xs leading-5 text-muted-foreground">A keke carries up to 4 passengers.</p>
             </div>
 
-            <div className="surface-panel mt-7 p-2">
-              <div className="relative">
-                <div className="journey-line" />
-                <LocationSelect
-                  icon={LocateFixed}
-                  id="origin"
-                  label="Current location"
-                  locations={locations}
-                  loading={locationsQuery.isLoading}
-                  value={originLoc?.id ?? ""}
-                  invalid={Boolean(errors.origin)}
-                  onChange={(v) => { setOriginId(v); setErrors((e) => ({ ...e, origin: undefined, destination: undefined })); }}
-                />
-                <div className="ml-14 h-px bg-border" />
-                <LocationSelect
-                  icon={MapPin}
-                  id="destination"
-                  label="Destination"
-                  locations={locations}
-                  loading={locationsQuery.isLoading}
-                  value={destinationLoc?.id ?? ""}
-                  invalid={Boolean(errors.destination)}
-                  onChange={(v) => { setDestinationId(v); setErrors((e) => ({ ...e, destination: undefined })); }}
-                />
-              </div>
-            </div>
-            {locationsQuery.error && <FieldError>We couldn't load FUTAMOVE locations. Check your connection and try again.</FieldError>}
-
             {errors.origin && <FieldError>{errors.origin}</FieldError>}
             {errors.destination && <FieldError>{errors.destination}</FieldError>}
+
+            <FutaMap
+              originLocationId={originId}
+              destinationLocationId={destinationId}
+              onOriginChange={setOriginId}
+              onDestinationChange={setDestinationId}
+              onRouteEstimateChange={setRouteEstimate}
+              locations={locations}
+              locationsLoading={locationsQuery.isLoading}
+            />
+            {locationsQuery.error && <FieldError>We couldn't load FUTAMOVE locations. Check your connection and try again.</FieldError>}
 
             <p className="mt-4 text-xs leading-5 text-muted-foreground">
               If you're matched, your current location becomes the group's suggested meeting point. Everyone confirms it before moving on.
@@ -296,6 +281,7 @@ export function RideRequestPage({
                 origin={origin}
                 destination={destination}
                 departure={useNow ? new Date().toISOString() : departure}
+                routeEstimate={routeEstimate}
               />
               <p className="mt-3 text-sm text-muted-foreground">
                 {rideType === "shared" ? "Shared ride" : "Private keke"} · {partySize} {partySize === 1 ? "person" : "people"}
@@ -323,62 +309,6 @@ export function RideRequestPage({
         )}
       </div>
     </AppShell>
-  );
-}
-
-function LocationSelect({
-  icon: Icon,
-  id,
-  label,
-  locations,
-  loading,
-  value,
-  onChange,
-  invalid,
-}: {
-  icon: typeof MapPin;
-  id: string;
-  label: string;
-  locations: FutaLocation[];
-  loading: boolean;
-  value: string;
-  onChange: (value: string) => void;
-  invalid?: boolean;
-}) {
-  return (
-    <label
-      htmlFor={id}
-      className="relative z-10 grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3 rounded-[0.875rem] px-3 py-3 transition-colors hover:bg-background/70"
-    >
-      <span className="grid size-9 place-items-center rounded-full bg-background text-muted-foreground ring-1 ring-border">
-        <Icon className="size-4" strokeWidth={1.75} />
-      </span>
-      <span className="min-w-0">
-        <span className="block text-xs font-medium text-muted-foreground">{label}</span>
-        <select
-          id={id}
-          aria-label={label}
-          aria-invalid={invalid ? true : undefined}
-          value={value}
-          disabled={loading}
-          onChange={(event) => onChange(event.target.value)}
-          className="h-7 w-full appearance-none bg-transparent text-[0.9375rem] font-medium focus-visible:outline-none"
-        >
-          <option value="">{loading ? "Loading locations…" : "Choose a location"}</option>
-          {CATEGORY_ORDER.map((cat) => {
-            const items = locations.filter((l) => l.category === cat);
-            if (!items.length) return null;
-            return (
-              <optgroup key={cat} label={CATEGORY_LABELS[cat]}>
-                {items.map((l) => (
-                  <option key={l.id} value={l.id}>{l.name}</option>
-                ))}
-              </optgroup>
-            );
-          })}
-        </select>
-      </span>
-    </label>
   );
 }
 
@@ -427,11 +357,13 @@ export function RouteSummary({
   destination,
   departure,
   meetingPoint,
+  routeEstimate,
 }: {
   origin: string;
   destination: string;
   departure: string;
   meetingPoint?: string | null;
+  routeEstimate?: string | null;
 }) {
   return (
     <div className="surface-panel p-5">
@@ -450,6 +382,11 @@ export function RouteSummary({
           <span className="block text-sm font-semibold">{formatDepartureTime(departure)}</span>
         </span>
       </div>
+      {routeEstimate && (
+        <p className="mt-4 border-t border-border pt-4 text-sm font-semibold text-muted-foreground">
+          {routeEstimate}
+        </p>
+      )}
       {meetingPoint ? (
         <div className="mt-4 flex items-center gap-3 border-t border-border pt-4">
           <span className="grid size-9 place-items-center rounded-full bg-muted text-muted-foreground">
