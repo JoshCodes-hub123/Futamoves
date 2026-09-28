@@ -1,11 +1,11 @@
 {
-  "version": 1,
   "asset_id": "03a0fe58-c655-48b8-ae35-74945f20eca3",
-  "project_id": "e02a6415-7c92-4451-9244-8334fb153ffe",
-  "url": "/__l5e/assets-v1/03a0fe58-c655-48b8-ae35-74945f20eca3/futamove-logo.png",
-  "r2_key": "a/v1/e02a6415-7c92-4451-9244-8334fb153ffe/03a0fe58-c655-48b8-ae35-74945f20eca3/futamove-logo.png",
-  "original_filename": "futamove-logo.png",
-  "size": 708091,
   "content_type": "image/png",
-  "created_at": "2026-09-22T08:20:05Z"
+  "created_at": "2026-09-22T08:20:05Z",
+  "original_filename": "futamove-logo.png",
+  "project_id": "d27d96ef-8e44-448b-be6d-4beaa90972ce",
+  "r2_key": "a/v1/d27d96ef-8e44-448b-be6d-4beaa90972ce/03a0fe58-c655-48b8-ae35-74945f20eca3/futamove-logo.png",
+  "size": 708091,
+  "url": "/__l5e/assets-v1/03a0fe58-c655-48b8-ae35-74945f20eca3/futamove-logo.png",
+  "version": 1
 }

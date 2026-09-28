@@ -1,11 +1,11 @@
 {
-  "version": 1,
   "asset_id": "8cf8e7ad-8966-4486-b828-1feae405f248",
-  "project_id": "e02a6415-7c92-4451-9244-8334fb153ffe",
-  "url": "/__l5e/assets-v1/8cf8e7ad-8966-4486-b828-1feae405f248/futamove-logo-2026.jpg",
-  "r2_key": "a/v1/e02a6415-7c92-4451-9244-8334fb153ffe/8cf8e7ad-8966-4486-b828-1feae405f248/futamove-logo-2026.jpg",
-  "original_filename": "futamove-logo-2026.jpg",
-  "size": 58569,
   "content_type": "image/jpeg",
-  "created_at": "2026-09-24T18:53:19Z"
+  "created_at": "2026-09-24T18:53:19Z",
+  "original_filename": "futamove-logo-2026.jpg",
+  "project_id": "d27d96ef-8e44-448b-be6d-4beaa90972ce",
+  "r2_key": "a/v1/d27d96ef-8e44-448b-be6d-4beaa90972ce/8cf8e7ad-8966-4486-b828-1feae405f248/futamove-logo-2026.jpg",
+  "size": 58569,
+  "url": "/__l5e/assets-v1/8cf8e7ad-8966-4486-b828-1feae405f248/futamove-logo-2026.jpg",
+  "version": 1
 }

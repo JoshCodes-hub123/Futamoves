@@ -229,6 +229,50 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          body: string
+          created_at: string
+          event_key: string | null
+          id: string
+          is_read: boolean
+          notification_type: string
+          recipient_id: string
+          title: string
+          trip_id: string | null
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          event_key?: string | null
+          id?: string
+          is_read?: boolean
+          notification_type: string
+          recipient_id: string
+          title: string
+          trip_id?: string | null
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          event_key?: string | null
+          id?: string
+          is_read?: boolean
+          notification_type?: string
+          recipient_id?: string
+          title?: string
+          trip_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ride_group_members: {
         Row: {
           confirmed_version: number | null
@@ -1157,6 +1201,27 @@ export type Database = {
       dispatch_tick: { Args: never; Returns: undefined }
       dispatch_trip: { Args: { _trip: string }; Returns: undefined }
       dropoff_radius_m: { Args: never; Returns: number }
+      emit_admin_notifications: {
+        Args: {
+          p_body: string
+          p_event_key: string
+          p_title: string
+          p_trip_id: string
+          p_type: string
+        }
+        Returns: undefined
+      }
+      emit_notification: {
+        Args: {
+          p_body: string
+          p_event_key: string
+          p_recipient_id: string
+          p_title: string
+          p_trip_id: string
+          p_type: string
+        }
+        Returns: undefined
+      }
       geo_distance_m: {
         Args: { lat1: number; lat2: number; lng1: number; lng2: number }
         Returns: number
@@ -1212,6 +1277,10 @@ export type Database = {
           _trip: string
         }
         Returns: undefined
+      }
+      mark_notification_read: {
+        Args: { p_notification_id: string }
+        Returns: boolean
       }
       match_ride_request: { Args: { p_request_id: string }; Returns: Json }
       match_time_tolerance: { Args: never; Returns: string }
