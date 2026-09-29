@@ -104,12 +104,12 @@ export function RiderWalletPage() {
             <div className={box}><p className="section-label">Pending funding</p><p className="mt-1 text-3xl font-bold">{naira(d.pending_funding_kobo)}</p><p className="text-xs text-muted-foreground">Awaiting admin confirmation</p></div>
             <div className={box}><p className="section-label">Service charge</p><p className="mt-1 text-3xl font-bold">{d.service_charge_bps / 100}%</p><p className="text-xs text-muted-foreground">of each ride's fare</p></div>
           </div>
-          <p className="mt-4 text-sm text-muted-foreground">Fund your wallet early. Wallet funding requires admin confirmation before the balance becomes available for ride acceptance. You may fund more than the minimum required amount to reduce delays when accepting rides.</p>
+          <p className="mt-4 text-sm text-muted-foreground"><strong className="text-foreground">Fund ahead to avoid delays.</strong> You can fund any amount within the permitted range. Top-ups need admin confirmation before they can be used to accept rides.</p>
           {!open ? <Button size="lg" className="mt-4 w-full sm:w-auto" onClick={() => setOpen(true)}><Plus /> Fund wallet</Button> : (
             <div className={`${box} mt-4 space-y-4`}>
               <SectionHeading title="Fund wallet" />
-              <div className="flex flex-wrap gap-2">{[1000, 2000, 5000].map((n) => <Button key={n} type="button" size="sm" variant={amount === String(n) ? "default" : "secondary"} onClick={() => setAmount(String(n))}>{naira(n * 100)}</Button>)}</div>
-              <div><Label htmlFor="amt">Amount (₦)</Label><Input id="amt" inputMode="numeric" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="Custom amount" /><p className="mt-1 text-xs text-muted-foreground">Between {naira(d.min_funding_kobo)} and {naira(d.max_funding_kobo)}.</p></div>
+              <div><Label htmlFor="amt">Amount transferred (₦)</Label><Input id="amt" inputMode="numeric" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="Custom amount, e.g. 7350" /><p className="mt-1 text-xs text-muted-foreground">Enter the exact amount you transferred — any amount between {naira(d.min_funding_kobo)} and {naira(d.max_funding_kobo)}.</p></div>
+              <div className="flex flex-wrap gap-2"><span className="self-center text-xs text-muted-foreground">Quick pick:</span>{[1000, 2000, 5000, 10000].map((n) => <Button key={n} type="button" size="sm" variant={amount === String(n) ? "default" : "secondary"} onClick={() => setAmount(String(n))}>{naira(n * 100)}</Button>)}</div>
               <div className="rounded-md border border-brand/40 bg-brand/5 p-3">
                 <p className="text-sm font-semibold">How to pay FUTAMOVE</p>
                 {d.funding_instructions.trim() ? <p className="mt-1 whitespace-pre-wrap text-sm">{d.funding_instructions}</p> : <p className="mt-1 text-sm text-muted-foreground">FUTAMOVE hasn't added payment details yet. Please check back later.</p>}
@@ -247,7 +247,7 @@ function FinancialSettingsCard() {
   if (!cur) return <LoadingState />;
   return (
     <div className={`${box} grid gap-3 sm:grid-cols-3`}>
-      <div><Label>Rider service charge (%)</Label><Input inputMode="decimal" value={cur.pct} onChange={(e) => setV({ ...cur, pct: e.target.value })} /><p className="mt-1 text-xs text-muted-foreground">Applies to rides accepted after saving.</p></div>
+      <div><Label>Rider wallet service charge (%)</Label><Input inputMode="decimal" value={cur.pct} onChange={(e) => setV({ ...cur, pct: e.target.value })} /><p className="mt-1 text-xs text-muted-foreground">Applies to new rides. Charges already locked on existing rides won't change. Every change is logged.</p></div>
       <div><Label>Minimum funding (₦)</Label><Input inputMode="numeric" value={cur.min} onChange={(e) => setV({ ...cur, min: e.target.value })} /></div>
       <div><Label>Maximum funding (₦)</Label><Input inputMode="numeric" value={cur.max} onChange={(e) => setV({ ...cur, max: e.target.value })} /></div>
       <div className="sm:col-span-3"><Label>Wallet funding instructions (bank name, account name, account number)</Label><Textarea rows={3} value={cur.instr} onChange={(e) => setV({ ...cur, instr: e.target.value })} /><p className="mt-1 text-xs text-muted-foreground">Only shown to signed-in riders inside the Fund wallet form.</p></div>
