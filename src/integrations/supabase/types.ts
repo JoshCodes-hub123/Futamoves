@@ -947,6 +947,7 @@ export type Database = {
           amount_kobo: number
           created_at: string
           fare_kobo: number
+          id: string
           rider_id: string
           service_charge_bps: number
           status: string
@@ -957,6 +958,7 @@ export type Database = {
           amount_kobo: number
           created_at?: string
           fare_kobo: number
+          id?: string
           rider_id: string
           service_charge_bps: number
           status: string
@@ -967,6 +969,7 @@ export type Database = {
           amount_kobo?: number
           created_at?: string
           fare_kobo?: number
+          id?: string
           rider_id?: string
           service_charge_bps?: number
           status?: string
