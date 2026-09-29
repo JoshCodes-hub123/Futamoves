@@ -107,6 +107,149 @@ export type Database = {
         }
         Relationships: []
       }
+      fare_rule_history: {
+        Row: {
+          action: string
+          changed_by: string | null
+          created_at: string
+          destination_location_id: string
+          fare_rule_id: string
+          id: string
+          new_active: boolean
+          new_amount_kobo: number
+          origin_location_id: string
+          party_size: number | null
+          previous_active: boolean | null
+          previous_amount_kobo: number | null
+          reason: string | null
+          ride_type: string
+        }
+        Insert: {
+          action: string
+          changed_by?: string | null
+          created_at?: string
+          destination_location_id: string
+          fare_rule_id: string
+          id?: string
+          new_active: boolean
+          new_amount_kobo: number
+          origin_location_id: string
+          party_size?: number | null
+          previous_active?: boolean | null
+          previous_amount_kobo?: number | null
+          reason?: string | null
+          ride_type: string
+        }
+        Update: {
+          action?: string
+          changed_by?: string | null
+          created_at?: string
+          destination_location_id?: string
+          fare_rule_id?: string
+          id?: string
+          new_active?: boolean
+          new_amount_kobo?: number
+          origin_location_id?: string
+          party_size?: number | null
+          previous_active?: boolean | null
+          previous_amount_kobo?: number | null
+          reason?: string | null
+          ride_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fare_rule_history_fare_rule_id_fkey"
+            columns: ["fare_rule_id"]
+            isOneToOne: false
+            referencedRelation: "fare_rules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fare_rules: {
+        Row: {
+          active: boolean
+          amount_kobo: number
+          created_at: string
+          destination_location_id: string
+          id: string
+          origin_location_id: string
+          party_size: number | null
+          ride_type: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          active?: boolean
+          amount_kobo: number
+          created_at?: string
+          destination_location_id: string
+          id?: string
+          origin_location_id: string
+          party_size?: number | null
+          ride_type: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          active?: boolean
+          amount_kobo?: number
+          created_at?: string
+          destination_location_id?: string
+          id?: string
+          origin_location_id?: string
+          party_size?: number | null
+          ride_type?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fare_rules_destination_location_id_fkey"
+            columns: ["destination_location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fare_rules_origin_location_id_fkey"
+            columns: ["origin_location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      financial_settings: {
+        Row: {
+          funding_instructions: string
+          id: boolean
+          max_funding_kobo: number
+          min_funding_kobo: number
+          service_charge_bps: number
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          funding_instructions?: string
+          id?: boolean
+          max_funding_kobo?: number
+          min_funding_kobo?: number
+          service_charge_bps?: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          funding_instructions?: string
+          id?: boolean
+          max_funding_kobo?: number
+          min_funding_kobo?: number
+          service_charge_bps?: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       location_suggestions: {
         Row: {
           approved_location_id: string | null
@@ -678,6 +821,27 @@ export type Database = {
           },
         ]
       }
+      rider_wallets: {
+        Row: {
+          balance_kobo: number
+          reserved_kobo: number
+          rider_id: string
+          updated_at: string
+        }
+        Insert: {
+          balance_kobo?: number
+          reserved_kobo?: number
+          rider_id: string
+          updated_at?: string
+        }
+        Update: {
+          balance_kobo?: number
+          reserved_kobo?: number
+          rider_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       student_profiles: {
         Row: {
           account_type: string
@@ -778,6 +942,47 @@ export type Database = {
           },
         ]
       }
+      trip_service_charges: {
+        Row: {
+          amount_kobo: number
+          created_at: string
+          fare_kobo: number
+          rider_id: string
+          service_charge_bps: number
+          status: string
+          trip_id: string
+          updated_at: string
+        }
+        Insert: {
+          amount_kobo: number
+          created_at?: string
+          fare_kobo: number
+          rider_id: string
+          service_charge_bps: number
+          status: string
+          trip_id: string
+          updated_at?: string
+        }
+        Update: {
+          amount_kobo?: number
+          created_at?: string
+          fare_kobo?: number
+          rider_id?: string
+          service_charge_bps?: number
+          status?: string
+          trip_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trip_service_charges_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       trip_status_history: {
         Row: {
           actor_id: string | null
@@ -842,6 +1047,11 @@ export type Database = {
           dispatch_started_at: string
           dispatch_state: string
           escalated_at: string | null
+          fare_kobo: number | null
+          fare_locked_at: string | null
+          fare_per_passenger_kobo: number | null
+          fare_ride_type: string | null
+          fare_rule_id: string | null
           group_id: string
           id: string
           meeting_point_location_id: string | null
@@ -874,6 +1084,11 @@ export type Database = {
           dispatch_started_at?: string
           dispatch_state?: string
           escalated_at?: string | null
+          fare_kobo?: number | null
+          fare_locked_at?: string | null
+          fare_per_passenger_kobo?: number | null
+          fare_ride_type?: string | null
+          fare_rule_id?: string | null
           group_id: string
           id?: string
           meeting_point_location_id?: string | null
@@ -906,6 +1121,11 @@ export type Database = {
           dispatch_started_at?: string
           dispatch_state?: string
           escalated_at?: string | null
+          fare_kobo?: number | null
+          fare_locked_at?: string | null
+          fare_per_passenger_kobo?: number | null
+          fare_ride_type?: string | null
+          fare_rule_id?: string | null
           group_id?: string
           id?: string
           meeting_point_location_id?: string | null
@@ -925,6 +1145,13 @@ export type Database = {
             columns: ["destination_location_id"]
             isOneToOne: false
             referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trips_fare_rule_id_fkey"
+            columns: ["fare_rule_id"]
+            isOneToOne: false
+            referencedRelation: "fare_rules"
             referencedColumns: ["id"]
           },
           {
@@ -1021,6 +1248,117 @@ export type Database = {
         }
         Relationships: []
       }
+      wallet_funding_requests: {
+        Row: {
+          amount_kobo: number
+          created_at: string
+          id: string
+          method: string
+          paid_at: string | null
+          payer_reference: string | null
+          provider_reference: string | null
+          receipt_path: string
+          rejection_reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          rider_id: string
+          status: string
+        }
+        Insert: {
+          amount_kobo: number
+          created_at?: string
+          id?: string
+          method?: string
+          paid_at?: string | null
+          payer_reference?: string | null
+          provider_reference?: string | null
+          receipt_path: string
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          rider_id: string
+          status?: string
+        }
+        Update: {
+          amount_kobo?: number
+          created_at?: string
+          id?: string
+          method?: string
+          paid_at?: string | null
+          payer_reference?: string | null
+          provider_reference?: string | null
+          receipt_path?: string
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          rider_id?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      wallet_transactions: {
+        Row: {
+          amount_kobo: number
+          balance_after_kobo: number
+          balance_impact_kobo: number
+          created_at: string
+          created_by: string | null
+          created_by_role: string
+          description: string
+          funding_request_id: string | null
+          id: string
+          reserved_after_kobo: number
+          rider_id: string
+          trip_id: string | null
+          type: string
+        }
+        Insert: {
+          amount_kobo: number
+          balance_after_kobo: number
+          balance_impact_kobo: number
+          created_at?: string
+          created_by?: string | null
+          created_by_role: string
+          description: string
+          funding_request_id?: string | null
+          id?: string
+          reserved_after_kobo: number
+          rider_id: string
+          trip_id?: string | null
+          type: string
+        }
+        Update: {
+          amount_kobo?: number
+          balance_after_kobo?: number
+          balance_impact_kobo?: number
+          created_at?: string
+          created_by?: string | null
+          created_by_role?: string
+          description?: string
+          funding_request_id?: string | null
+          id?: string
+          reserved_after_kobo?: number
+          rider_id?: string
+          trip_id?: string | null
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wallet_transactions_funding_request_id_fkey"
+            columns: ["funding_request_id"]
+            isOneToOne: false
+            referencedRelation: "wallet_funding_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wallet_transactions_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -1105,6 +1443,14 @@ export type Database = {
       }
       admin_ops_overview: { Args: never; Returns: Json }
       admin_redispatch: { Args: { p_trip_id: string }; Returns: undefined }
+      admin_reverse_service_charge: {
+        Args: { p_reason: string; p_trip_id: string }
+        Returns: undefined
+      }
+      admin_review_funding: {
+        Args: { p_approve: boolean; p_id: string; p_reason: string }
+        Returns: undefined
+      }
       admin_rider_pool: {
         Args: never
         Returns: {
@@ -1118,6 +1464,32 @@ export type Database = {
           rating_count: number
           user_id: string
         }[]
+      }
+      admin_rider_wallets: {
+        Args: never
+        Returns: {
+          balance_kobo: number
+          full_name: string
+          pending_kobo: number
+          reserved_kobo: number
+          rider_id: string
+        }[]
+      }
+      admin_save_fare_rule: {
+        Args: {
+          p_amount_kobo: number
+          p_dest: string
+          p_id: string
+          p_origin: string
+          p_party: number
+          p_reason: string
+          p_ride_type: string
+        }
+        Returns: string
+      }
+      admin_set_fare_rule_active: {
+        Args: { p_active: boolean; p_id: string; p_reason: string }
+        Returns: undefined
       }
       admin_trip_dispatch: { Args: { p_trip_id: string }; Returns: Json }
       admin_trip_issues: {
@@ -1158,6 +1530,24 @@ export type Database = {
         }
         Returns: undefined
       }
+      admin_update_financial_settings: {
+        Args: {
+          p_funding_instructions: string
+          p_max_funding_kobo: number
+          p_min_funding_kobo: number
+          p_service_charge_bps: number
+        }
+        Returns: undefined
+      }
+      admin_wallet_adjust: {
+        Args: {
+          p_amount_kobo: number
+          p_credit: boolean
+          p_reason: string
+          p_rider: string
+        }
+        Returns: undefined
+      }
       agree_meeting_point: { Args: { p_group_id: string }; Returns: undefined }
       approve_location_suggestion: {
         Args: {
@@ -1177,6 +1567,19 @@ export type Database = {
       can_view_rider_photo: { Args: { _path: string }; Returns: boolean }
       claim_lecturer_role: { Args: never; Returns: string }
       claim_student_role: { Args: never; Returns: string }
+      compute_fare: {
+        Args: {
+          p_dest: string
+          p_origin: string
+          p_party: number
+          p_ride_type: string
+        }
+        Returns: {
+          fare_kobo: number
+          per_passenger_kobo: number
+          rule_id: string
+        }[]
+      }
       confirm_meeting_point: {
         Args: { p_group_id: string; p_version?: number }
         Returns: undefined
@@ -1318,6 +1721,15 @@ export type Database = {
         }
         Returns: boolean
       }
+      quote_fare: {
+        Args: {
+          p_dest: string
+          p_origin: string
+          p_party: number
+          p_ride_type: string
+        }
+        Returns: Json
+      }
       rate_rider: {
         Args: { p_stars: number; p_tags: string[]; p_trip_id: string }
         Returns: undefined
@@ -1365,6 +1777,14 @@ export type Database = {
           passenger_count: number
         }[]
       }
+      rider_charge_preview: {
+        Args: { p_trip_ids: string[] }
+        Returns: {
+          charge_kobo: number
+          fare_kobo: number
+          trip_id: string
+        }[]
+      }
       rider_claim_trip: { Args: { p_trip_id: string }; Returns: undefined }
       rider_dispatch_score: { Args: { _uid: string }; Returns: Json }
       rider_is_busy: {
@@ -1399,6 +1819,16 @@ export type Database = {
         Args: { p_accept: boolean; p_offer_id: string; p_reason?: string }
         Returns: Json
       }
+      rider_submit_funding: {
+        Args: {
+          p_amount_kobo: number
+          p_paid_at: string
+          p_receipt_path: string
+          p_reference: string
+        }
+        Returns: string
+      }
+      rider_wallet_summary: { Args: never; Returns: Json }
       rider_withdraw_trip: {
         Args: { p_reason: string; p_trip_id: string }
         Returns: undefined
@@ -1407,6 +1837,7 @@ export type Database = {
         Args: { p_body: string; p_group_id: string }
         Returns: string
       }
+      service_charge_for: { Args: { p_fare: number }; Returns: number }
       set_meeting_point: {
         Args: { p_group_id: string; p_location_id: string; p_note?: string }
         Returns: undefined
@@ -1482,6 +1913,21 @@ export type Database = {
       try_start_trip: {
         Args: { _role: string; _trip: string }
         Returns: boolean
+      }
+      wallet_post: {
+        Args: {
+          p_actor: string
+          p_actor_role: string
+          p_amount: number
+          p_balance_delta: number
+          p_description: string
+          p_funding: string
+          p_reserved_delta: number
+          p_rider: string
+          p_trip: string
+          p_type: string
+        }
+        Returns: number
       }
     }
     Enums: {
