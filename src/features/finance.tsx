@@ -21,7 +21,7 @@ const PAY_NOTE = "Payment is made directly to your rider. FUTAMOVE does not curr
 const box = "rounded-card border border-border bg-card p-4";
 
 /* ---------------- students ---------------- */
-export function FareQuote({ origin, dest, kind, party }: { origin?: string; dest?: string; kind: RideKind; party: number }) {
+export function FareQuote({ origin, dest, kind, party }: { origin?: string | undefined; dest?: string | undefined; kind: RideKind; party: number }) {
   const q = useQuery({ queryKey: ["quote", origin, dest, kind, party], queryFn: () => quoteFare(origin!, dest!, kind, party), enabled: !!origin && !!dest });
   return (
     <div className={`${box} mt-4`}>
@@ -279,7 +279,7 @@ export function AdminWalletFundingPage() {
   return (
     <AdminFrame title="Wallet funding" intro="Approve rider wallet funding only after confirming the money arrived. Approval credits the wallet exactly once.">
       <div className="flex flex-wrap gap-2">{(["pending", "approved", "rejected"] as const).map((s) => (
-        <Button key={s} size="sm" variant={filter === s ? "default" : "secondary"} onClick={() => setFilter(s)}>{s[0].toUpperCase() + s.slice(1)} ({(reqs.data ?? []).filter((r) => r.status === s).length})</Button>))}</div>
+        <Button key={s} size="sm" variant={filter === s ? "default" : "secondary"} onClick={() => setFilter(s)}>{s.charAt(0).toUpperCase() + s.slice(1)} ({(reqs.data ?? []).filter((r) => r.status === s).length})</Button>))}</div>
       {review.error && <p className="mt-3 text-sm text-destructive">{review.error.message}</p>}
       {reqs.isLoading ? <LoadingState /> : rows.length ? (
         <div className="divider-list mt-3">{rows.map((r) => (
