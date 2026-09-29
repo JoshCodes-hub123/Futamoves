@@ -9,7 +9,6 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 import { Label } from "@/components/ui/label";
 import { claimLecturerRole, claimStudentRole, getMyRole, homeForRole } from "@/services/roles";
 import { supabase } from "@/integrations/supabase/client";
-import logo from "@/assets/futamove-logo.webp";
 import gateHero from "@/assets/futa-gate-hero.webp.asset.json";
 
 function PublicShell({ children, back, step }: { children: React.ReactNode; back?: string; step?: string }) {
