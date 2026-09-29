@@ -135,15 +135,35 @@ export function RideRequestPage({
           </button>
           <span className="section-label">Step {stepIndex} of 3</span>
         </div>
+        <div className="mt-3 grid grid-cols-3 gap-1.5" aria-hidden>
+          {[1, 2, 3].map((n) => <span key={n} className={cn("h-1 rounded-full transition-colors motion-reduce:transition-none", n <= stepIndex ? "bg-brand" : "bg-border")} />)}
+        </div>
 
         {step === "route" && (
-          <section className="mt-8">
+          <section className="mt-6">
             <ScreenHeader eyebrow="Ride request" title="Where are you going?" />
-            <p className="mt-3 text-sm leading-6 text-muted-foreground">
-              Choose your current location and destination from approved FUTAMOVE locations.
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">
+              Pick your pickup and destination from approved FUTAMOVE locations.
             </p>
 
-            <div className="mt-7 grid grid-cols-2 gap-2" role="radiogroup" aria-label="Ride type">
+            {errors.origin && <FieldError>{errors.origin}</FieldError>}
+            {errors.destination && <FieldError>{errors.destination}</FieldError>}
+
+            <div className="mt-5">
+              <FutaMap
+                originLocationId={originId}
+                destinationLocationId={destinationId}
+                onOriginChange={setOriginId}
+                onDestinationChange={setDestinationId}
+                onRouteEstimateChange={setRouteEstimate}
+                locations={locations}
+                locationsLoading={locationsQuery.isLoading}
+              />
+            </div>
+            {locationsQuery.error && <FieldError>We couldn't load FUTAMOVE locations. Check your connection and try again.</FieldError>}
+
+            <p className="mt-7 section-label">Ride type</p>
+            <div className="mt-2 grid grid-cols-2 gap-2" role="radiogroup" aria-label="Ride type">
               {(["shared", "private"] as const).map((type) => (
                 <button
                   key={type}
@@ -152,20 +172,24 @@ export function RideRequestPage({
                   aria-checked={rideType === type}
                   onClick={() => setRideType(type)}
                   className={cn(
-                    "rounded-lg border px-3 py-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                    "relative rounded-card border-2 p-3.5 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                     rideType === type ? "border-brand bg-brand/10" : "border-border hover:bg-muted/50",
                   )}
                 >
-                  <span className="block text-sm font-semibold">{type === "shared" ? "Shared ride" : "Private keke"}</span>
-                  <span className="mt-0.5 block text-xs text-muted-foreground">
+                  <span className={cn("mb-2 grid size-9 place-items-center rounded-full", rideType === type ? "bg-brand text-primary-foreground" : "bg-muted text-muted-foreground")}>
+                    {type === "shared" ? <Users className="size-4" /> : <LocateFixed className="size-4" />}
+                  </span>
+                  <span className="block text-sm font-bold">{type === "shared" ? "Shared ride" : "Private Keke"}</span>
+                  <span className="mt-0.5 block text-xs leading-4 text-muted-foreground">
                     {type === "shared" ? "Split with verified FUTA users" : "Just your party, no matching"}
                   </span>
+                  {rideType === type && <Check className="absolute right-3 top-3 size-4 text-brand-strong" strokeWidth={3} />}
                 </button>
               ))}
             </div>
 
             <div className="mt-5">
-              <p className="text-[0.8125rem] font-medium">How many people?</p>
+              <p className="section-label">Passengers</p>
               <div className="mt-2 grid grid-cols-4 gap-2" role="radiogroup" aria-label="Party size">
                 {[1, 2, 3, 4].map((n) => (
                   <button
@@ -175,7 +199,7 @@ export function RideRequestPage({
                     aria-checked={partySize === n}
                     onClick={() => setPartySize(n)}
                     className={cn(
-                      "h-11 rounded-lg border text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                      "h-11 rounded-lg border-2 text-sm font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                       partySize === n ? "border-brand bg-brand/10" : "border-border hover:bg-muted/50",
                     )}
                   >
@@ -186,25 +210,17 @@ export function RideRequestPage({
               <p className="mt-2 text-xs leading-5 text-muted-foreground">A keke carries up to 4 passengers.</p>
             </div>
 
-            {errors.origin && <FieldError>{errors.origin}</FieldError>}
-            {errors.destination && <FieldError>{errors.destination}</FieldError>}
-
-            <FutaMap
-              originLocationId={originId}
-              destinationLocationId={destinationId}
-              onOriginChange={setOriginId}
-              onDestinationChange={setDestinationId}
-              onRouteEstimateChange={setRouteEstimate}
-              locations={locations}
-              locationsLoading={locationsQuery.isLoading}
-            />
-            {locationsQuery.error && <FieldError>We couldn't load FUTAMOVE locations. Check your connection and try again.</FieldError>}
+            {originLoc && destinationLoc && originLoc.id !== destinationLoc.id && (
+              <div className="mt-5 rounded-card border border-border bg-muted/30 px-4 pb-4">
+                <FareQuote origin={originLoc.id} dest={destinationLoc.id} kind={rideType} party={partySize} />
+              </div>
+            )}
 
             <p className="mt-4 text-xs leading-5 text-muted-foreground">
               If you're matched, your current location becomes the group's suggested meeting point. Everyone confirms it before moving on.
             </p>
 
-            <Button size="lg" className="mt-7 w-full" onClick={continueFromRoute}>
+            <Button size="lg" className="sticky bottom-24 mt-6 w-full shadow-lg lg:static" onClick={continueFromRoute}>
               Continue
             </Button>
           </section>
