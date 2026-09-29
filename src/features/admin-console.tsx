@@ -36,6 +36,8 @@ export function AdminNav() {
       <Link to="/admin/location-suggestions" className={link} activeProps={active}>Location Suggestions</Link>
       <Link to="/admin/rides" className={link} activeProps={active}>Rides</Link>
       <Link to="/admin/dispatch" className={link} activeProps={active}>Dispatch</Link>
+      <Link to="/admin/pricing" className={link} activeProps={active}>Pricing</Link>
+      <Link to="/admin/wallet-funding" className={link} activeProps={active}>Wallet funding</Link>
       <Link to="/admin/riders" className={link} activeProps={active}>Riders</Link>
       <Link to="/admin/settings" className={link} activeProps={active}>Settings</Link>
     </nav>

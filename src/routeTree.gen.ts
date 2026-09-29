@@ -27,10 +27,12 @@ import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminDispatchRouteImport } from './routes/_authenticated/admin.dispatch'
 import { Route as AuthenticatedAdminLocationSuggestionsRouteImport } from './routes/_authenticated/admin.location-suggestions'
 import { Route as AuthenticatedAdminLocationsRouteImport } from './routes/_authenticated/admin.locations'
+import { Route as AuthenticatedAdminPricingRouteImport } from './routes/_authenticated/admin.pricing'
 import { Route as AuthenticatedAdminRidersRouteImport } from './routes/_authenticated/admin.riders'
 import { Route as AuthenticatedAdminRidesRouteImport } from './routes/_authenticated/admin.rides'
 import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin.settings'
 import { Route as AuthenticatedAdminVerificationRouteImport } from './routes/_authenticated/admin.verification'
+import { Route as AuthenticatedAdminWalletFundingRouteImport } from './routes/_authenticated/admin.wallet-funding'
 import { Route as AuthenticatedRiderHomeRouteImport } from './routes/_authenticated/rider.home'
 import { Route as AuthenticatedRiderProfileRouteImport } from './routes/_authenticated/rider.profile'
 import { Route as AuthenticatedRiderRequestsRouteImport } from './routes/_authenticated/rider.requests'
@@ -139,6 +141,12 @@ const AuthenticatedAdminLocationsRoute =
     path: '/locations',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminPricingRoute =
+  AuthenticatedAdminPricingRouteImport.update({
+    id: '/pricing',
+    path: '/pricing',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminRidersRoute =
   AuthenticatedAdminRidersRouteImport.update({
     id: '/riders',
@@ -160,6 +168,12 @@ const AuthenticatedAdminVerificationRoute =
   AuthenticatedAdminVerificationRouteImport.update({
     id: '/verification',
     path: '/verification',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminWalletFundingRoute =
+  AuthenticatedAdminWalletFundingRouteImport.update({
+    id: '/wallet-funding',
+    path: '/wallet-funding',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedRiderHomeRoute = AuthenticatedRiderHomeRouteImport.update({
@@ -256,10 +270,12 @@ export interface FileRoutesByFullPath {
   '/admin/dispatch': typeof AuthenticatedAdminDispatchRoute
   '/admin/location-suggestions': typeof AuthenticatedAdminLocationSuggestionsRoute
   '/admin/locations': typeof AuthenticatedAdminLocationsRoute
+  '/admin/pricing': typeof AuthenticatedAdminPricingRoute
   '/admin/riders': typeof AuthenticatedAdminRidersRoute
   '/admin/rides': typeof AuthenticatedAdminRidesRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/verification': typeof AuthenticatedAdminVerificationRoute
+  '/admin/wallet-funding': typeof AuthenticatedAdminWalletFundingRoute
   '/rider/home': typeof AuthenticatedRiderHomeRoute
   '/rider/profile': typeof AuthenticatedRiderProfileRoute
   '/rider/requests': typeof AuthenticatedRiderRequestsRoute
@@ -291,10 +307,12 @@ export interface FileRoutesByTo {
   '/admin/dispatch': typeof AuthenticatedAdminDispatchRoute
   '/admin/location-suggestions': typeof AuthenticatedAdminLocationSuggestionsRoute
   '/admin/locations': typeof AuthenticatedAdminLocationsRoute
+  '/admin/pricing': typeof AuthenticatedAdminPricingRoute
   '/admin/riders': typeof AuthenticatedAdminRidersRoute
   '/admin/rides': typeof AuthenticatedAdminRidesRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/verification': typeof AuthenticatedAdminVerificationRoute
+  '/admin/wallet-funding': typeof AuthenticatedAdminWalletFundingRoute
   '/rider/home': typeof AuthenticatedRiderHomeRoute
   '/rider/profile': typeof AuthenticatedRiderProfileRoute
   '/rider/requests': typeof AuthenticatedRiderRequestsRoute
@@ -329,10 +347,12 @@ export interface FileRoutesById {
   '/_authenticated/admin/dispatch': typeof AuthenticatedAdminDispatchRoute
   '/_authenticated/admin/location-suggestions': typeof AuthenticatedAdminLocationSuggestionsRoute
   '/_authenticated/admin/locations': typeof AuthenticatedAdminLocationsRoute
+  '/_authenticated/admin/pricing': typeof AuthenticatedAdminPricingRoute
   '/_authenticated/admin/riders': typeof AuthenticatedAdminRidersRoute
   '/_authenticated/admin/rides': typeof AuthenticatedAdminRidesRoute
   '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/_authenticated/admin/verification': typeof AuthenticatedAdminVerificationRoute
+  '/_authenticated/admin/wallet-funding': typeof AuthenticatedAdminWalletFundingRoute
   '/_authenticated/rider/home': typeof AuthenticatedRiderHomeRoute
   '/_authenticated/rider/profile': typeof AuthenticatedRiderProfileRoute
   '/_authenticated/rider/requests': typeof AuthenticatedRiderRequestsRoute
@@ -367,10 +387,12 @@ export interface FileRouteTypes {
     | '/admin/dispatch'
     | '/admin/location-suggestions'
     | '/admin/locations'
+    | '/admin/pricing'
     | '/admin/riders'
     | '/admin/rides'
     | '/admin/settings'
     | '/admin/verification'
+    | '/admin/wallet-funding'
     | '/rider/home'
     | '/rider/profile'
     | '/rider/requests'
@@ -402,10 +424,12 @@ export interface FileRouteTypes {
     | '/admin/dispatch'
     | '/admin/location-suggestions'
     | '/admin/locations'
+    | '/admin/pricing'
     | '/admin/riders'
     | '/admin/rides'
     | '/admin/settings'
     | '/admin/verification'
+    | '/admin/wallet-funding'
     | '/rider/home'
     | '/rider/profile'
     | '/rider/requests'
@@ -439,10 +463,12 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/dispatch'
     | '/_authenticated/admin/location-suggestions'
     | '/_authenticated/admin/locations'
+    | '/_authenticated/admin/pricing'
     | '/_authenticated/admin/riders'
     | '/_authenticated/admin/rides'
     | '/_authenticated/admin/settings'
     | '/_authenticated/admin/verification'
+    | '/_authenticated/admin/wallet-funding'
     | '/_authenticated/rider/home'
     | '/_authenticated/rider/profile'
     | '/_authenticated/rider/requests'
@@ -599,6 +625,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminLocationsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/pricing': {
+      id: '/_authenticated/admin/pricing'
+      path: '/pricing'
+      fullPath: '/admin/pricing'
+      preLoaderRoute: typeof AuthenticatedAdminPricingRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/riders': {
       id: '/_authenticated/admin/riders'
       path: '/riders'
@@ -625,6 +658,13 @@ declare module '@tanstack/react-router' {
       path: '/verification'
       fullPath: '/admin/verification'
       preLoaderRoute: typeof AuthenticatedAdminVerificationRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/wallet-funding': {
+      id: '/_authenticated/admin/wallet-funding'
+      path: '/wallet-funding'
+      fullPath: '/admin/wallet-funding'
+      preLoaderRoute: typeof AuthenticatedAdminWalletFundingRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/rider/home': {
@@ -725,10 +765,12 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminDispatchRoute: typeof AuthenticatedAdminDispatchRoute
   AuthenticatedAdminLocationSuggestionsRoute: typeof AuthenticatedAdminLocationSuggestionsRoute
   AuthenticatedAdminLocationsRoute: typeof AuthenticatedAdminLocationsRoute
+  AuthenticatedAdminPricingRoute: typeof AuthenticatedAdminPricingRoute
   AuthenticatedAdminRidersRoute: typeof AuthenticatedAdminRidersRoute
   AuthenticatedAdminRidesRoute: typeof AuthenticatedAdminRidesRoute
   AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
   AuthenticatedAdminVerificationRoute: typeof AuthenticatedAdminVerificationRoute
+  AuthenticatedAdminWalletFundingRoute: typeof AuthenticatedAdminWalletFundingRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
@@ -737,10 +779,12 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminLocationSuggestionsRoute:
     AuthenticatedAdminLocationSuggestionsRoute,
   AuthenticatedAdminLocationsRoute: AuthenticatedAdminLocationsRoute,
+  AuthenticatedAdminPricingRoute: AuthenticatedAdminPricingRoute,
   AuthenticatedAdminRidersRoute: AuthenticatedAdminRidersRoute,
   AuthenticatedAdminRidesRoute: AuthenticatedAdminRidesRoute,
   AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
   AuthenticatedAdminVerificationRoute: AuthenticatedAdminVerificationRoute,
+  AuthenticatedAdminWalletFundingRoute: AuthenticatedAdminWalletFundingRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
 

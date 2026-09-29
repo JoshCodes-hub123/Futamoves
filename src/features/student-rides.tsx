@@ -1,3 +1,4 @@
+import { StudentTripFare } from "@/features/finance";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
@@ -629,6 +630,7 @@ function StudentTripPanel({ g }: { g: RideGroup }) {
     <>
       <p className="section-label">Your ride</p>
       <h1 className="display-title mt-2 text-[2rem]">{label}</h1>
+      <StudentTripFare tripId={t.id} />
       <p className="mt-3 text-sm leading-6 text-muted-foreground">
         {cancelled
           ? cancelReasonText({ status: t.status, member_count: size.data ?? 2, cancel_reason: t.cancel_reason }) ?? "This ride was cancelled."
