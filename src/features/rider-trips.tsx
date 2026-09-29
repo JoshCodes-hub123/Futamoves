@@ -1,3 +1,4 @@
+import { RiderChargeLine } from "@/features/finance";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { CalendarClock, CheckCircle2, Loader2, MapPin, Users } from "lucide-react";
@@ -63,7 +64,7 @@ function CurrentTrip({ trip, onDone }: { trip: Trip; onDone: () => Promise<void>
         <p className="section-label">My current ride</p>
         <Badge variant="warning" className="rounded-full">{RIDER_LABEL[s]}</Badge>
       </div>
-      <div className="mt-4"><Route from={trip.meeting_point_text} to={trip.destination_text} when={trip.departure_time} pax={trip.passenger_count} note={trip.meeting_point_note} /></div>
+      <div className="mt-4"><Route from={trip.meeting_point_text} to={trip.destination_text} when={trip.departure_time} pax={trip.passenger_count} note={trip.meeting_point_note} /><RiderChargeLine tripId={trip.id} /></div>
       <p className="mt-3 text-xs text-muted-foreground">{trip.member_count} {trip.member_count === 1 ? "booking" : "bookings"} in this group · pickup at the agreed meeting point</p>
       {act.error && <p className="mt-4 text-sm text-destructive">{act.error.message}</p>}
       <div className="mt-5 grid gap-3">
@@ -128,7 +129,7 @@ function OfferCard({ offer, onDone }: { offer: RideOffer; onDone: () => Promise<
         <p className="section-label">New ride offer</p>
         <Badge variant="warning" className="rounded-full tabular-nums">{left > 0 ? `${left}s left` : "Expiring…"}</Badge>
       </div>
-      <div className="mt-4"><Route from={offer.meeting_point_text} to={offer.destination_text} when={offer.departure_time} pax={offer.passenger_count} note={offer.meeting_point_note} /></div>
+      <div className="mt-4"><Route from={offer.meeting_point_text} to={offer.destination_text} when={offer.departure_time} pax={offer.passenger_count} note={offer.meeting_point_note} /><RiderChargeLine tripId={offer.trip_id} /></div>
       <p className="mt-3 text-xs text-muted-foreground">{offer.member_count} {offer.member_count === 1 ? "booking" : "bookings"} · pickup at the agreed meeting point</p>
       {(act.error || msg) && <p className="mt-3 text-sm text-destructive">{msg ?? act.error?.message}</p>}
       <div className="mt-5 grid grid-cols-2 gap-3">
@@ -205,6 +206,7 @@ export function RiderOperations() {
               {available.data.map((t) => (
                 <div key={t.id} className="py-4">
                   <Route from={t.meeting_point_text} to={t.destination_text} when={t.departure_time} pax={t.passenger_count} note={t.meeting_point_note} />
+<RiderChargeLine tripId={t.id} />
                   <Button className="mt-3 w-full" size="sm" variant="secondary" disabled={!!current || hasOffer || claim.isPending} onClick={() => claim.mutate(t.id)}>
                     {current ? "Finish your current ride first" : hasOffer ? "Answer your offer first" : "Take this ride"}
                   </Button>
@@ -336,6 +338,7 @@ export function RiderRequestsPage() {
                   <div key={t.id} className="py-4">
                     <div className="mb-2 flex items-center gap-2"><Badge variant="success" className="rounded-full">New</Badge><span className="text-xs font-semibold text-muted-foreground">{isPrivateTrip(t) ? "Private Keke" : "Shared ride"}</span></div>
                     <Route from={t.meeting_point_text} to={t.destination_text} when={t.departure_time} pax={t.passenger_count} note={t.meeting_point_note} />
+<RiderChargeLine tripId={t.id} />
                     <Button className="mt-3 w-full" size="sm" variant="secondary" disabled={!!current || hasOffer || claim.isPending} onClick={() => claim.mutate(t.id)}>
                       {current ? "Finish your current ride first" : hasOffer ? "Answer your offer first" : "Take this ride"}
                     </Button>

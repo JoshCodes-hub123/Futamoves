@@ -1,3 +1,4 @@
+import { FareQuote } from "@/features/finance";
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import {
@@ -286,6 +287,7 @@ export function RideRequestPage({
               <p className="mt-3 text-sm text-muted-foreground">
                 {rideType === "shared" ? "Shared ride" : "Private keke"} · {partySize} {partySize === 1 ? "person" : "people"}
               </p>
+              <FareQuote origin={originLoc?.id} dest={destinationLoc?.id} kind={rideType} party={partySize} />
             </div>
 
             {submitError && (

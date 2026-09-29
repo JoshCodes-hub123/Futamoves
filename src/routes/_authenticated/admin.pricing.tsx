@@ -1,0 +1,3 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { AdminPricingPage } from "@/features/finance";
+export const Route = createFileRoute("/_authenticated/admin/pricing")({ head: () => ({ meta: [{ title: "Pricing — Admin — FUTAMOVE" }, { name: "description", content: "Manage FUTAMOVE route fares and rider service charge." }, { property: "og:title", content: "Pricing — Admin — FUTAMOVE" }, { property: "og:description", content: "Manage FUTAMOVE route fares and rider service charge." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }), component: AdminPricingPage });

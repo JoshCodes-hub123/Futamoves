@@ -1,0 +1,3 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { AdminWalletFundingPage } from "@/features/finance";
+export const Route = createFileRoute("/_authenticated/admin/wallet-funding")({ head: () => ({ meta: [{ title: "Wallet funding — Admin — FUTAMOVE" }, { name: "description", content: "Review rider wallet funding requests and balances." }, { property: "og:title", content: "Wallet funding — Admin — FUTAMOVE" }, { property: "og:description", content: "Review rider wallet funding requests and balances." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }), component: AdminWalletFundingPage });
