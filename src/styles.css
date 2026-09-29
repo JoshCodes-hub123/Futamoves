@@ -2,6 +2,8 @@
 @source "../src";
 @import "tw-animate-css";
 @import "leaflet/dist/leaflet.css";
+@import "@fontsource-variable/inter/wght.css";
+@import "@fontsource-variable/plus-jakarta-sans/wght.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -20,8 +22,8 @@
  */
 
 @theme inline {
-  --font-sans: "Barlow", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Oswald", "Barlow", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Plus Jakarta Sans Variable", "Inter Variable", ui-sans-serif, system-ui, sans-serif;
   --color-brand: var(--brand);
   --color-brand-hover: var(--brand-hover);
   --color-brand-strong: var(--brand-strong);
@@ -209,7 +211,8 @@
   background: var(--background);
   padding: 1rem 1.125rem;
   text-align: left;
-  transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease;
+  transition: border-color 180ms ease, background-color 180ms ease, box-shadow 180ms ease, transform 120ms ease;
+  &:active { transform: scale(0.985); }
   & strong { display: block; font-size: 0.9375rem; letter-spacing: -0.01em; }
   & small { display: block; margin-top: 0.25rem; color: var(--muted-foreground); font-weight: 400; }
 }
@@ -250,17 +253,15 @@
 @utility section-label {
   font-size: 0.75rem;
   font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
   color: var(--muted-foreground);
 }
 
 @utility display-title {
   font-family: var(--font-display);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0;
-  line-height: 1;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
 }
 
 @utility welcome-grid {
@@ -276,3 +277,11 @@
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
 }
 
+
+/* Tactile press feedback for buttons and selectable controls */
+@layer base {
+  h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.02em; }
+  button:not(:disabled), a[role="button"], [role="radio"] { transition-property: color, background-color, border-color, box-shadow, transform; transition-duration: 180ms; }
+  button:not(:disabled):active, [role="radio"]:active { transform: scale(0.97); }
+  .tabular { font-variant-numeric: tabular-nums; }
+}
