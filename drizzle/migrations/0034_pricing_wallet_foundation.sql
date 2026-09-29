@@ -443,3 +443,10 @@ CREATE POLICY "Riders read own receipts" ON storage.objects FOR SELECT TO authen
   USING (bucket_id = 'wallet-receipts' AND (storage.foldername(name))[1] = auth.uid()::text);
 CREATE POLICY "Admins read receipts" ON storage.objects FOR SELECT TO authenticated
   USING (bucket_id = 'wallet-receipts' AND public.has_role(auth.uid(), 'admin'));
+
+-- Follow-up (applied same day): surrogate id on trip_service_charges so a rider can withdraw and re-take a ride.
+ALTER TABLE public.trip_service_charges ADD COLUMN id uuid NOT NULL DEFAULT gen_random_uuid();
+ALTER TABLE public.trip_service_charges DROP CONSTRAINT trip_service_charges_pkey;
+ALTER TABLE public.trip_service_charges ADD PRIMARY KEY (id);
+CREATE UNIQUE INDEX trip_charges_one_open ON public.trip_service_charges (trip_id) WHERE status = 'reserved';
+-- trips_service_charge() and admin_reverse_service_charge() redefined to update rows by id (see live definitions).
