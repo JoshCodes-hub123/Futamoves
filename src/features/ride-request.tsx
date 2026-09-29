@@ -277,17 +277,27 @@ export function RideRequestPage({
               Check the details before we look for passengers heading your way.
             </p>
 
-            <div className="mt-7">
-              <RouteSummary
-                origin={origin}
-                destination={destination}
-                departure={useNow ? new Date().toISOString() : departure}
-                routeEstimate={routeEstimate}
-              />
-              <p className="mt-3 text-sm text-muted-foreground">
-                {rideType === "shared" ? "Shared ride" : "Private keke"} · {partySize} {partySize === 1 ? "person" : "people"}
-              </p>
-              <FareQuote origin={originLoc?.id} dest={destinationLoc?.id} kind={rideType} party={partySize} />
+            <div className="mt-7 overflow-hidden rounded-card border border-border bg-card shadow-sm">
+              <div className="grid gap-3 p-5">
+                <div className="grid grid-cols-[3rem_minmax(0,1fr)] items-baseline gap-2">
+                  <span className="text-[0.6875rem] font-bold uppercase tracking-wider text-muted-foreground">From</span>
+                  <span className="truncate text-lg font-bold">{origin}</span>
+                </div>
+                <div className="grid grid-cols-[3rem_minmax(0,1fr)] items-baseline gap-2">
+                  <span className="text-[0.6875rem] font-bold uppercase tracking-wider text-muted-foreground">To</span>
+                  <span className="truncate text-lg font-bold">{destination}</span>
+                </div>
+                <div className="flex flex-wrap gap-2 pt-1">
+                  {routeEstimate && <span className="rounded-full bg-muted px-3 py-1 text-xs font-semibold">{routeEstimate}</span>}
+                  <span className="rounded-full bg-brand/15 px-3 py-1 text-xs font-bold uppercase tracking-wide text-brand-strong">{rideType === "shared" ? "Shared" : "Private Keke"}</span>
+                  <span className="rounded-full bg-muted px-3 py-1 text-xs font-semibold">{partySize} {partySize === 1 ? "person" : "people"}</span>
+                  <span className="rounded-full bg-muted px-3 py-1 text-xs font-semibold">{formatDepartureTime(useNow ? new Date().toISOString() : departure)}</span>
+                </div>
+              </div>
+              <div className="border-t border-border bg-muted/30 px-5 pb-5">
+                <FareQuote origin={originLoc?.id} dest={destinationLoc?.id} kind={rideType} party={partySize} />
+                <p className="mt-3 text-xs leading-5 text-muted-foreground">Pay your rider directly in cash or transfer at the end of the trip. No payment is taken in the app.</p>
+              </div>
             </div>
 
             {submitError && (

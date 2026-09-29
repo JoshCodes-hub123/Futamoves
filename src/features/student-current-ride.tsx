@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { ACTIVE_TRIP_STATUSES, studentTripLabel, type Trip, type TripStatus } from "@/services/trips";
 import { TripRiderCard } from "@/features/trip-rider-card";
+import { JourneyTracker } from "@/components/futamove/journey-tracker";
+import { Button } from "@/components/ui/button";
 
 /** Loads the student's real active trip (RLS: group members only). */
 async function getMyActiveTrip(): Promise<{ trip: Trip; requestId: string | null } | null> {
@@ -26,13 +28,22 @@ export function StudentCurrentRide() {
   }
   const { trip, requestId } = cur;
   return (
-    <div className="surface-panel p-4">
-      <div className="flex items-center justify-between gap-3">
-        <p className="flex min-w-0 items-center gap-2 text-sm font-semibold"><MapPin className="size-4 shrink-0 text-brand" /><span className="truncate">{trip.meeting_point_text} → {trip.destination_text}</span></p>
-        <Badge variant="warning" className="shrink-0 rounded-full">{studentTripLabel(trip.status as TripStatus, trip.dispatch_state, trip.confirmed_at)}</Badge>
+    <div className="surface-panel overflow-hidden">
+      <div className="border-b border-border bg-muted/40 p-4">
+        <div className="flex items-center justify-between gap-3">
+          <span className="section-label">Current ride</span>
+          <Badge variant="warning" className="shrink-0 rounded-full">{studentTripLabel(trip.status as TripStatus, trip.dispatch_state, trip.confirmed_at)}</Badge>
+        </div>
+        <div className="mt-3 grid gap-1.5">
+          <p className="flex min-w-0 items-center gap-2 text-sm"><span className="w-10 shrink-0 text-[0.6875rem] font-bold uppercase tracking-wider text-muted-foreground">From</span><span className="truncate font-semibold">{trip.meeting_point_text}</span></p>
+          <p className="flex min-w-0 items-center gap-2 text-sm"><span className="w-10 shrink-0 text-[0.6875rem] font-bold uppercase tracking-wider text-muted-foreground">To</span><MapPin className="size-3.5 shrink-0 text-brand" /><span className="truncate font-semibold">{trip.destination_text}</span></p>
+        </div>
       </div>
-      {trip.rider_id && <TripRiderCard tripId={trip.id} status={trip.status} departure={trip.departure_time} />}
-      {requestId && <Link to="/student/rides/$id" params={{ id: requestId }} className="mt-3 inline-block text-sm font-semibold underline">Open ride details</Link>}
+      <div className="p-4">
+        <JourneyTracker status={trip.status} riderId={trip.rider_id} />
+        {trip.rider_id && <TripRiderCard tripId={trip.id} status={trip.status} departure={trip.departure_time} />}
+        {requestId && <Button asChild variant="secondary" className="mt-4 w-full"><Link to="/student/rides/$id" params={{ id: requestId }}>Open ride details</Link></Button>}
+      </div>
     </div>
   );
 }
