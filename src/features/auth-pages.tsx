@@ -1,3 +1,4 @@
+import { PublicShell } from "@/components/futamove/public-shell";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
@@ -10,16 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { claimStudentRole, getMyRole, homeForRole } from "@/services/roles";
 
 function Shell({ title, description, children }: { title: string; description: string; children: React.ReactNode }) {
-  return (
-    <main className="min-h-screen bg-background px-6 py-10">
-      <div className="mx-auto w-full max-w-sm">
-        <Brand compact />
-        <h1 className="display-title mt-10 text-3xl">{title}</h1>
-        <p className="mt-2 text-sm leading-6 text-muted-foreground">{description}</p>
-        <div className="mt-8">{children}</div>
-      </div>
-    </main>
-  );
+  return <PublicShell><h1 className="display-title text-[2.25rem]">{title}</h1><p className="mt-3 text-sm leading-6 text-muted-foreground">{description}</p><div className="mt-8">{children}</div></PublicShell>;
 }
 
 function Msg({ ok, text }: { ok: boolean; text: string }) {
