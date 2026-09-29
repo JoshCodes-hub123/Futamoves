@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, Camera, IdCard, ShieldCheck } from "lucide-react";
+import { ArrowLeft, Camera, Check, IdCard, ShieldCheck } from "lucide-react";
 import { Brand } from "@/components/futamove/brand";
 import { FieldError, TrustNote } from "@/components/futamove/primitives";
 import { Button } from "@/components/ui/button";
@@ -113,10 +113,17 @@ export function VerificationPage() {
         )}
 
         {locked ? (
-          <div className="rounded-card border border-border p-5">
-            <p className="font-semibold">{VERIFICATION_LABEL[status!]}</p>
-            <p className="mt-1 text-sm text-muted-foreground">{status === "verified" ? "Your FUTA identity is confirmed." : "Your details are with our team. You'll be able to join shared rides once approved."}</p>
-            <Button asChild className="mt-5 w-full"><Link to="/student/home">Go to home</Link></Button>
+          <div className="overflow-hidden rounded-card border border-border bg-card shadow-sm">
+            <div className={`flex items-center gap-3 p-5 ${status === "verified" ? "bg-success/10" : "bg-brand/10"}`}>
+              <span className={`grid size-11 shrink-0 place-items-center rounded-full ${status === "verified" ? "bg-success text-primary-foreground" : "bg-brand text-primary-foreground"}`}><ShieldCheck className="size-5" /></span>
+              <div className="min-w-0"><p className="font-bold">{VERIFICATION_LABEL[status!]}</p><p className="text-sm text-muted-foreground">{status === "verified" ? "Your FUTA identity is confirmed." : "Usually reviewed within one working day."}</p></div>
+            </div>
+            <ol className="grid gap-2 p-5 text-sm">
+              <li className="flex items-center gap-2"><Check className="size-4 text-success" /> Details submitted</li>
+              <li className={`flex items-center gap-2 ${status === "verified" ? "" : "text-muted-foreground"}`}>{status === "verified" ? <Check className="size-4 text-success" /> : <span className="ml-1 mr-1 size-2 animate-pulse rounded-full bg-brand" />} Admin review</li>
+              <li className={`flex items-center gap-2 ${status === "verified" ? "" : "text-muted-foreground"}`}>{status === "verified" ? <Check className="size-4 text-success" /> : <span className="ml-1 mr-1 size-2 rounded-full bg-border" />} Shared rides unlocked</li>
+            </ol>
+            <div className="px-5 pb-5"><Button asChild className="w-full"><Link to="/student/home">Go to home</Link></Button></div>
           </div>
         ) : user && (
           <form onSubmit={submit} noValidate>
