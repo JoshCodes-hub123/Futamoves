@@ -55,15 +55,17 @@ function RequestRow({ request, trip, dispatchState }: { request: RideRequest; tr
     <Link
       to="/student/rides/$id"
       params={{ id: request.id }}
-      className="group flex items-center gap-4 py-4 transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      className="group my-2 flex items-center gap-3 rounded-card border border-border bg-card p-4 shadow-sm transition-colors hover:border-brand/50 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
     >
       <div className="min-w-0 flex-1">
-        <p className="section-label mb-2">
+        <p className="mb-2 text-xs font-medium text-muted-foreground">
           {trip && request.group_id ? studentTripLabel(trip, dispatchState) : request.status === "searching" && request.group_id ? "In a temporary group" : request.status === "searching" && request.ride_type === "private" ? "Private keke" : request.status === "searching" ? "Searching for passengers" : request.status === "cancelled" ? "Cancelled request" : "Draft request"}
         </p>
-        <p className="truncate text-sm font-semibold">{request.origin_text}</p>
-        <p className="truncate text-sm font-semibold text-muted-foreground">↓ {request.destination_text}</p>
-        <p className="mt-1.5 text-xs text-muted-foreground">{formatDepartureTime(request.departure_time)}</p>
+        <div className="grid grid-cols-[0.75rem_minmax(0,1fr)] items-center gap-x-2 gap-y-1">
+          <span className="size-2 rounded-full bg-brand" /><p className="truncate font-display text-[0.9375rem] font-bold">{request.origin_text}</p>
+          <span className="size-2 rounded-full border-2 border-foreground" /><p className="truncate font-display text-[0.9375rem] font-bold">{request.destination_text}</p>
+        </div>
+        <p className="mt-2 text-xs text-muted-foreground tabular">{formatDepartureTime(request.departure_time)}</p>
       </div>
       <div className="flex shrink-0 items-center gap-2">
         <StatusPill status={request.status} trip={request.group_id ? trip : undefined} />

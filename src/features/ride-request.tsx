@@ -231,30 +231,42 @@ export function RideRequestPage({
             <ScreenHeader eyebrow="Ride request" title="When are you leaving?" />
             <p className="mt-3 text-sm leading-6 text-muted-foreground">Pick a time that suits your trip.</p>
 
-            <div className="mt-7 grid gap-3">
-              <TimeOption
-                label="Now"
-                detail="Leave as soon as passengers are found"
-                active={useNow}
-                onSelect={() => {
-                  setUseNow(true);
-                  setErrors((e) => ({ ...e, time: undefined }));
-                }}
-              />
+            <button
+              type="button"
+              aria-pressed={useNow}
+              onClick={() => { setUseNow(true); setErrors((e) => ({ ...e, time: undefined })); }}
+              className={cn(
+                "mt-7 flex w-full items-center gap-4 rounded-card border-2 p-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                useNow ? "border-brand bg-brand/10" : "border-border hover:bg-muted/50",
+              )}
+            >
+              <span className={cn("grid size-12 shrink-0 place-items-center rounded-full", useNow ? "bg-brand text-primary-foreground" : "bg-muted")}><Clock3 className="size-5" /></span>
+              <span className="min-w-0 flex-1">
+                <span className="block font-display text-lg font-extrabold">Leave now</span>
+                <span className="block text-xs text-muted-foreground">As soon as passengers or a rider are found</span>
+              </span>
+              {useNow && <Check className="size-5 shrink-0 text-brand-strong" strokeWidth={3} />}
+            </button>
+
+            <p className="mt-6 section-label">Or schedule</p>
+            <div className="mt-2 grid grid-cols-2 gap-2">
               {suggestions.map((option) => {
                 const active = !useNow && departure === option.iso;
                 return (
-                  <TimeOption
+                  <button
                     key={option.iso}
-                    label={option.label}
-                    detail={formatDepartureTime(option.iso)}
-                    active={active}
-                    onSelect={() => {
-                      setUseNow(false);
-                      setDeparture(option.iso);
-                      setErrors((e) => ({ ...e, time: undefined }));
-                    }}
-                  />
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() => { setUseNow(false); setDeparture(option.iso); setErrors((e) => ({ ...e, time: undefined })); }}
+                    className={cn(
+                      "relative rounded-card border-2 p-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                      active ? "border-brand bg-brand/10" : "border-border hover:bg-muted/50",
+                    )}
+                  >
+                    <span className="block font-display text-base font-bold tabular">{option.label}</span>
+                    <span className="mt-0.5 block truncate text-xs text-muted-foreground">{formatDepartureTime(option.iso)}</span>
+                    {active && <Check className="absolute right-2.5 top-2.5 size-4 text-brand-strong" strokeWidth={3} />}
+                  </button>
                 );
               })}
             </div>
