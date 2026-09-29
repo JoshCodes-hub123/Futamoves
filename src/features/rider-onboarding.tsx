@@ -1,3 +1,4 @@
+import { PublicShell } from "@/components/futamove/public-shell";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -14,17 +15,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { getMyRiderApplication, RIDER_STATUS_LABEL, submitRiderApplication, validateRiderImage } from "@/services/riders";
 
 function Shell({ children, back }: { children: React.ReactNode; back?: string }) {
-  return (
-    <main className="min-h-screen bg-background px-5 pb-12 pt-6 sm:grid sm:place-items-center sm:px-8">
-      <div className="mx-auto w-full max-w-sm sm:max-w-md">
-        <div className="mb-9 flex h-11 items-center justify-between">
-          {back ? <Link to={back} aria-label="Go back" className="inline-flex size-11 items-center justify-center rounded-full border border-border bg-background hover:bg-muted"><ArrowLeft className="size-[18px]" strokeWidth={1.75} /></Link> : <Brand compact />}
-          <span className="section-label">Rider registration</span>
-        </div>
-        {children}
-      </div>
-    </main>
-  );
+  return <PublicShell back={back} step="Rider registration">{children}</PublicShell>;
 }
 
 function Err({ text }: { text: string | null }) {
