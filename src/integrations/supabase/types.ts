@@ -842,6 +842,30 @@ export type Database = {
         }
         Relationships: []
       }
+      service_charge_history: {
+        Row: {
+          changed_by: string | null
+          created_at: string
+          id: string
+          new_bps: number
+          previous_bps: number | null
+        }
+        Insert: {
+          changed_by?: string | null
+          created_at?: string
+          id?: string
+          new_bps: number
+          previous_bps?: number | null
+        }
+        Update: {
+          changed_by?: string | null
+          created_at?: string
+          id?: string
+          new_bps?: number
+          previous_bps?: number | null
+        }
+        Relationships: []
+      }
       student_profiles: {
         Row: {
           account_type: string
