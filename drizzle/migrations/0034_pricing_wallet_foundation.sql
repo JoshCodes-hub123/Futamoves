@@ -450,3 +450,5 @@ ALTER TABLE public.trip_service_charges DROP CONSTRAINT trip_service_charges_pke
 ALTER TABLE public.trip_service_charges ADD PRIMARY KEY (id);
 CREATE UNIQUE INDEX trip_charges_one_open ON public.trip_service_charges (trip_id) WHERE status = 'reserved';
 -- trips_service_charge() and admin_reverse_service_charge() redefined to update rows by id (see live definitions).
+REVOKE INSERT, UPDATE, DELETE, TRUNCATE ON public.financial_settings, public.fare_rules, public.fare_rule_history, public.rider_wallets, public.wallet_funding_requests, public.wallet_transactions, public.trip_service_charges FROM authenticated, anon;
+REVOKE ALL ON public.financial_settings, public.fare_rules, public.fare_rule_history, public.rider_wallets, public.wallet_funding_requests, public.wallet_transactions, public.trip_service_charges FROM anon;
