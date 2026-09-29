@@ -1,21 +1,21 @@
 # Deploying FUTAMOVE to Vercel
 
-FUTAMOVE is a TanStack Start app (server-rendered, not a plain SPA). Vercel is detected automatically at build time, and `vite.config.ts` pins the `vercel` output when `VERCEL=1`. No `vercel.json` rewrites are needed — all routes, including protected ones, are served by the app itself, so refreshing works.
+FUTAMOVE is a TanStack Start app with server rendering. When `VERCEL=1` (set automatically by Vercel), `vite.config.ts` switches the server output to the `vercel` preset and the build writes `.vercel/output` (Vercel Build Output API). `vercel.json` pins the install/build commands, so dashboard settings cannot drift. No rewrites needed: every path (including protected pages and refreshes) is handled by the server function.
+
+Verified locally: a build with `VERCEL=1` outside the Lovable sandbox produced `.vercel/output` (Node 22 function + static assets), and `/`, `/login`, `/student/request` returned 200.
 
 ## Vercel project settings
-- Framework preset: **Other**
-- Install command: `bun install` (or `npm install`)
-- Build command: `bun run build` (or `npm run build`)
-- Output directory: leave empty (the build writes `.vercel/output`)
-- Node.js: 20 or newer
+- Framework preset: **Other** (vercel.json sets `framework: null`)
+- Install command: `bun install` (from vercel.json)
+- Build command: `bun run build` (from vercel.json)
+- Output directory: leave empty / override off
+- Node.js: 22.x
 
-## Environment variables
-Add the six variables listed in `.env.example`, with the values from the existing backend. Only publishable keys are used — no secret key is needed. Do not create a new database.
+## Environment variables (Production + Preview)
+VITE_SUPABASE_URL, VITE_SUPABASE_PUBLISHABLE_KEY, VITE_SUPABASE_PROJECT_ID,
+SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, SUPABASE_PROJECT_ID.
+Use the values from the project's `.env` (publishable only). Never add a service-role key.
 
-## Backend sign-in settings
-In the backend authentication URL settings add:
-- Site URL: `https://<your-vercel-domain>`
-- Redirect URLs: `https://<your-vercel-domain>/**` (covers password reset `/reset-password` and any sign-in return path)
-
-## Unaffected by the move
-The 20-second automatic rider search runs inside the database, so it keeps working regardless of where the website is hosted.
+## Auth redirect settings (after first deploy)
+- Site URL: `https://<vercel-domain>`
+- Redirect URLs: `https://<vercel-domain>/**`
